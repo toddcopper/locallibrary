@@ -8,21 +8,26 @@ function findBookById(books, id) {
   return books.find((book) => book.id === id);
 }
 
+// This function partitions an array of books by their borrowed status.
 function partitionBooksByBorrowedStatus(books) {
+  // Initialize two arrays to hold the borrowed and available books
   const borrowedBooks = [];
   const availableBooks = [];
   
+  // This helper function gets the latest borrow record for a book
+  function getLatestBorrow(book) {
+    // Destructure the `borrows` array to get the latest borrow record
+    const [latestBorrow] = book.borrows;
+    return latestBorrow;
+  }
+  
   // Loop through each book in the array
-  books.forEach(({ borrows: [latestBorrow], ...book }) => {
+  books.forEach((book) => {
     // Get the latest borrow record for the book
-    // Destructure the `borrows` array in the function argument to extract the first item as `latestBorrow`
-    // This avoids having to extract `latestBorrow` separately within the function body
-    
-    // Check if the book has been returned
-    (latestBorrow.returned ? availableBooks : borrowedBooks).push(book);
+    const latestBorrow = getLatestBorrow(book);
     // If the book has been returned, add it to the available books array
     // Otherwise, add it to the borrowed books array
-    // The ternary operator is used to choose which array to push the book to
+    (latestBorrow.returned ? availableBooks : borrowedBooks).push(book);
   });
   
   // Return an array containing the borrowed books array and the available books array
